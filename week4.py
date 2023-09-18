@@ -83,24 +83,19 @@ class FreePlayCards:
                     total += 1
         return total
             
-    def FreeDrawP(self):     
-        self.player_hand['cards'].append(self.deck.pop())
+    def DrawP(self):     
+        self.player_hand['cards'].append(random.choice(self.deck))
+        self.player_hand['values'] = self.score(self.player_hand['cards'])
         
-    def FreeDrawD(self):
-        self.dealer_hand['cards'].append(self.deck.pop())
-        if self.dealer_card['values'] > 16:
-            self.dealer_hand['cards'].append(self.deck.pop())
-           
-    
+    def DrawD(self):
+        self.dealer_hand['cards'].append(random.choice(self.deck))
+        self.dealer_hand['values'] = self.score(self.dealer_hand['cards'])
+        
     def Deal(self):
         for i in range(2):
-            self.player_hand['cards'].append(self.deck.pop())
-            self.dealer_hand['cards'].append(self.deck.pop())
-            self.player_hand['values'] += self.score(self.player_hand['cards'])
-            # self.player_card = [random.choice(self.deck.values())]
-            # self.player_hand.append(self.player_card)          
-            # self.dealer_card = [random.choice(self.deck.values())]
-            # self.dealer_hand.append(self.dealer_card)
+            self.player_hand['cards'].append(random.choice(self.deck))
+            self.dealer_hand['cards'].append(random.choice(self.deck))
+            self.player_hand['values'] = self.score(self.player_hand['cards'])
             
     
 class BlackJack:
@@ -111,49 +106,69 @@ class BlackJack:
     
     #The player can either choose to Hit or Stand. if they choose hit they recieve another card. If their total card value is greater then 21 they Bust and are out of the game
     def PlayerTurn(self):
-        print(f"Your hand is:  {cards.player_hand.keys()} \n The Dealers hand is {cards.dealer_hand.keys([0])} ")        
-        if sum(cards.player_hand.values()) == 21:
-            game.PlayerWin()
+        print(f"\nYour hand is: {cards.player_hand['cards']} \n\nThe Dealers hand is {cards.dealer_hand['cards'][0]} and one other")
+        if cards.player_hand['values'] == 21:
+            print('You got Black Jack. You Win!')
         else:
             while True:
-                responce = input('Would you like to [h]it, or [s]tand? ').lower
-                if responce == 'h':
-                    cards.FreeDrawP()
-                    print(f'your new hand is {cards.player_hand.keys()}')
-                    if sum(cards.player_hand.values()) > 21:
+                response = input('\nWould you like to [h]it, or [s]tand? ').lower()
+                if response == 'h':
+                    cards.DrawP()
+                    print(f"Your new hand is {cards.player_hand['cards']}")                  
+                    if cards.player_hand['values'] > 21:
                         print('You Bust, Dealer Wins!')
                         break
-                elif responce == 's':
-                    game.DealerTurn()
+                elif response == 's':
+                   break
                 
     #The dealer reveales their second card. If the dealers card sum is less than 16 they must draw again, but can bust if they go over 21. If the dealer gets black jack he wins and takes all bets placed.
-    def DealerTurn():
-        print(f'The dealers hand is {cards.dealer_hand.keys()}')
-        if sum(cards.dealer_hand) < 16:
-            cards.FreeDrawD()
-            if sum(cards.dealer_hand) > 21:
-                game.PlayerWin()
+    def DealerTurn(self):
+        print(f"The dealer's hand is {cards.dealer_hand['cards']}")
+        if cards.dealer_hand['values'] < 17:
+               print('The Dealer is drawing..')
+               cards.DrawD()
+               print(f"The dealer's new hand is {cards.dealer_hand['cards']} \n\nScore is:")                  
+               print(f"Dealer: {cards.dealer_hand['values']}") 
+               print(f"Player: {cards.player_hand['values']}")    
+               if cards.dealer_hand['values'] > 21:
+                    print('The dealer Busted. You win!\n')
+               elif cards.dealer_hand['values'] == 21:
+                   print('Dealer gets Black Jack, you lost!\n')
+               else:
+                    if cards.player_hand['values'] < cards.dealer_hand['values']:
+                        print('\nDealer Wins, better luck next time.\n')
+                    elif cards.player_hand['values'] > cards.dealer_hand['values']:
+                        print('\nYou Win!\n')
+                    else:
+                        print('\nIt was a draw\n')
+                   
+        
+        
+                
+    #If a players card sum is less than the dealer they loose. If the Players card sum is higher then the dealer they win, if the players card sum is equal to the dealer its a draw. 
+    def CompHands(self):
+            if cards.player_hand['values'] < cards.dealer_hand['values']:
+                print('Dealer Wins, better luck next time.')
+            elif cards.player_hand['values'] > cards.dealer_hand['values']:
+                print('You Win!')
+            else:
+                print('It was a draw')
+        
     
-    def PlayerWin(self):
-        print('You won!')
-        
-        
 def Driver():
     while True:
-        cards.Deal
-        print(cards.player_hand)
-        break
-    #    beg_in = input('Welcome To Black Jack! Would you like to [b]et or [f]reeplay? ').lower
-    #    if beg_in == 'f':
-    #          print('dealer is shuffling...\n\n The cards are being dealt. Good luck! ' )  
-    #          cards.Deal()
-    #          game.PlayerTurn()
-    #    elif beg_in == 'b':
-    #        pass
-       
-         
-                 
- 
+        answer = input('Welcome To Black Jack! Would you like to [q]uit or [p]lay? ').lower()
+        if answer == 'p':
+             print('dealer is shuffling...\n The cards are being dealt. Good luck! ' )
+             cards.Deal()
+             game.PlayerTurn() 
+             game.DealerTurn()
+            #  game.CompHands()
+             
+        elif answer == 'q':
+            print('Thanks for playing!')
+            break
+
 cards = FreePlayCards()
 game = BlackJack()
 Driver()
