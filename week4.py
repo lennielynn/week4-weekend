@@ -151,8 +151,9 @@ def Driver():
         if answer == 'p':
              print('dealer is shuffling...\n The cards are being dealt. Good luck! ' )
              cards.Deal()
-             game.PlayerTurn() 
-             game.DealerTurn()
+             game.PlayerTurn()
+             if cards.player_hand['values'] < 21:                 
+                game.DealerTurn()
         elif answer == 'q':
             print('Thanks for playing!')
             break
