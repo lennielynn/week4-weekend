@@ -142,17 +142,7 @@ class BlackJack:
                     else:
                         print('\nIt was a draw\n')
                    
-        
-        
-                
-    #If a players card sum is less than the dealer they loose. If the Players card sum is higher then the dealer they win, if the players card sum is equal to the dealer its a draw. 
-    def CompHands(self):
-            if cards.player_hand['values'] < cards.dealer_hand['values']:
-                print('Dealer Wins, better luck next time.')
-            elif cards.player_hand['values'] > cards.dealer_hand['values']:
-                print('You Win!')
-            else:
-                print('It was a draw')
+    
         
     
 def Driver():
@@ -163,8 +153,6 @@ def Driver():
              cards.Deal()
              game.PlayerTurn() 
              game.DealerTurn()
-            #  game.CompHands()
-             
         elif answer == 'q':
             print('Thanks for playing!')
             break
